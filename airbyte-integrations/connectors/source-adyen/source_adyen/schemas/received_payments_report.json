@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "Company_Account": {"type": ["null", "string"]},
+      "Merchant_Account": {"type": ["null", "string"]},
+      "Psp_Reference": {"type": ["null", "string"]},
+      "Merchant_Reference": {"type": ["null", "string"]},
+      "Payment_Method": {"type": ["null", "string"]},
+      "Creation_Date": {"type": ["null", "string"], "format": "date-time"},
+      "Currency": {"type": ["null", "string"]},
+      "Amount": {"type": ["null", "number"]},
+      "Type": {"type": ["null", "string"]},
+      "Risk_Scoring": {"type": ["null", "integer"]},
+      "Shopper_Interaction": {"type": ["null", "string"]},
+      "Shopper_Country": {"type": ["null", "string"]},
+      "Issuer_Name": {"type": ["null", "string"]},
+      "Issuer_Id": {"type": ["null", "integer"]},
+      "Issuer_Country": {"type": ["null", "string"]},
+      "Acquirer_Response": {"type": ["null", "string"]},
+      "Shopper_Email": {"type": ["null", "string"]},
+      "Shopper_Reference": {"type": ["null", "string"]},
+      "Billing_Country": {"type": ["null", "string"]},
+      "Payment_Method_Variant": {"type": ["null", "string"]}
+    }
+  }
