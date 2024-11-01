@@ -23,12 +23,12 @@
       "Payment_Date": {"type": ["null", "string"], "format": "date"},
       "Payment_Date_TimeZone": {"type": ["null", "string"]},
       "Payment_Currency": {"type": ["null", "string"]},
-      "Payment_Amount": {"type": ["null", "number"]},
+      "Payment_Amount": {"type": ["null", "string"]},
       "Dispute_Date": {"type": ["null", "string"], "format": "date"},
       "Dispute_Date_TimeZone": {"type": ["null", "string"]},
       "Dispute_ARN": {"type": ["null", "string"]},
       "User_Name": {"type": ["null", "string"]},
-      "Risk_Scoring": {"type": ["null", "number"]},
+      "Risk_Scoring": {"type": ["null", "string"]},
       "Shopper_Interaction": {"type": ["null", "string"]},
       "Shopper_Name": {"type": ["null", "string"]},
       "Shopper_Email": {"type": ["null", "string"]},
@@ -42,12 +42,12 @@
       "3D_Authentication_Response": {"type": ["null", "string"]},
       "CVC2_Response": {"type": ["null", "string"]},
       "AVS_Response": {"type": ["null", "string"]},
-      "Dispute_Auto_Defended": {"type": ["null", "boolean"]},
+      "Dispute_Auto_Defended": {"type": ["null", "string"]},
       "Dispute_End_Date": {"type": ["null", "string"], "format": "date"},
       "Dispute_End_Date_TimeZone": {"type": ["null", "string"]},
       "Reserved4": {"type": ["null", "string"]},
       "Reserved5": {"type": ["null", "string"]},
       "Status": {"type": ["null", "string"]},
-      "RDR": {"type": ["null", "boolean"]}
+      "RDR": {"type": ["null", "string"]}
     }
   }

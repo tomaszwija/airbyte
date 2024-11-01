@@ -86,6 +86,8 @@ class ReceivedPaymentsReport(IncrementalAdyenStream):
         elif response.status_code == 200:
             df = pd.read_csv(io.BytesIO(response.content))
             df.columns = df.columns.str.replace(" ", "_")
+            df = df.apply(lambda col: col.fillna("").astype(str) if col.name != 'Amount' else col)
+
             if not df.empty:
                 self._cursor_value = max(pd.to_datetime(df["Creation_Date"]))
             for _, row in df.iterrows():
@@ -132,6 +134,7 @@ class DisputeReport(IncrementalAdyenStream):
             
             # Let's not store iban and bic
             df = df.drop(columns=["Iban", "Bic"], errors="ignore")
+            df = df.apply(lambda col: col.fillna("").astype(str) if col.name != 'Dispute_Amount' else col)
 
             if not df.empty:
                 self._cursor_value = max(pd.to_datetime(df["Record_Date"]))
