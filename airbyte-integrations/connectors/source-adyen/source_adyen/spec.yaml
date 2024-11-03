@@ -8,6 +8,7 @@ connectionSpecification:
     - start_date
     - company_account
     - merchant_account
+    - settlement_details_starting_batch
   properties:
     api_token:
       type: string
@@ -22,3 +23,6 @@ connectionSpecification:
     merchant_account:
       type: string
       description: "Merchant account"
+    settlement_details_starting_batch:
+      type: number
+      description: "Starting batch number for settlement details report"

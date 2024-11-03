@@ -1,0 +1,12 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "Base_Currency": {"type": ["null", "string"]},
+        "Target_Currency": {"type": ["null", "string"]},
+        "Currency_Description": {"type": ["null", "string"]},
+        "Exponent": {"type": ["null", "number"]},
+        "Exchange_Rate": {"type": ["null", "number"]},
+        "Valid_From": {"type": ["null", "string"], "format": "date-time"}
+    }
+}
