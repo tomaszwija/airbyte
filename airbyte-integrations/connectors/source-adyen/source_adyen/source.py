@@ -6,7 +6,7 @@ import io
 from airbyte_cdk.sources import AbstractSource
 from airbyte_cdk.sources.streams import Stream
 from airbyte_cdk.sources.streams.http import HttpStream
-
+import numpy as np
 
 class AdyenAuth:
     def __init__(self, token: str):
@@ -97,11 +97,13 @@ class ReceivedPaymentsReport(IncrementalAdyenStream):
             df = pd.read_csv(io.BytesIO(response.content))
             df.columns = df.columns.str.replace(" ", "_")
             df = df.apply(lambda col: col.fillna("").astype(str) if col.name != 'Amount' else col)
+            df = df.fillna(np.nan)
 
             if not df.empty:
                 self._cursor_value = max(pd.to_datetime(df["Creation_Date"]))
             for _, row in df.iterrows():
-                yield row.to_dict()
+                row_dict = {key: (None if pd.isna(value) else value) for key, value in row.to_dict().items()}
+                yield row_dict
         else:
             response.raise_for_status()
 
@@ -145,12 +147,14 @@ class DisputeReport(IncrementalAdyenStream):
             # Let's not store iban and bic
             df = df.drop(columns=["Iban", "Bic"], errors="ignore")
             df = df.apply(lambda col: col.fillna("").astype(str) if col.name != 'Dispute_Amount' else col)
+            df = df.fillna(np.nan)
 
             if not df.empty:
                 self._cursor_value = max(pd.to_datetime(df["Record_Date"]))
 
             for _, row in df.iterrows():
-                yield row.to_dict()
+                row_dict = {key: (None if pd.isna(value) else value) for key, value in row.to_dict().items()}
+                yield row_dict
         else:
             response.raise_for_status()
 
@@ -191,12 +195,14 @@ class ExchangeRateReport(IncrementalAdyenStream):
             )
             df["TimeZone"] = "UTC"
             df = df.apply(lambda col: col.fillna("").astype(str) if col.name not in numeric_columns else col)
+            df = df.fillna(np.nan)
 
             if not df.empty:
                 self._cursor_value = max(pd.to_datetime(df["Valid_From"]))
 
             for _, row in df.iterrows():
-                yield row.to_dict()
+                row_dict = {key: (None if pd.isna(value) else value) for key, value in row.to_dict().items()}
+                yield row_dict
         else:
             response.raise_for_status()
 
@@ -233,12 +239,14 @@ class PaymentsAccountingReport(IncrementalAdyenStream):
                 'Processing Fee (FC)' 
             )
             df = df.apply(lambda col: col.fillna("").astype(str) if col.name not in numeric_columns else col)
+            df = df.fillna(np.nan)
             df.columns = df.columns.str.replace(" ", "_")
             if not df.empty:
                 self._cursor_value = max(pd.to_datetime(df["Booking_Date"]))
 
             for _, row in df.iterrows():
-                yield row.to_dict()
+                row_dict = {key: (None if pd.isna(value) else value) for key, value in row.to_dict().items()}
+                yield row_dict
         else:
             response.raise_for_status()
 
@@ -279,13 +287,15 @@ class SettlementDetailReport(IncrementalAdyenStream):
                 'Batch Number' 
             )
             df = df.apply(lambda col: col.fillna("").astype(str) if col.name not in numeric_columns else col)
+            df = df.fillna(np.nan)
             df.columns = df.columns.str.replace(" ", "_")
 
             if not df.empty:
                 self._cursor_value = max(df["Batch_Number"])
 
             for _, row in df.iterrows():
-                yield row.to_dict()
+                row_dict = {key: (None if pd.isna(value) else value) for key, value in row.to_dict().items()}
+                yield row_dict
         else:
             response.raise_for_status()
 
