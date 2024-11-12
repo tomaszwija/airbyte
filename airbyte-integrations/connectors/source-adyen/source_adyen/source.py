@@ -51,15 +51,24 @@ class IncrementalAdyenStream(AdyenStream):
 
     @property
     def state(self) -> Mapping[str, Any]:
-        if self._cursor_value:
-            return {self.cursor_field: self._cursor_value.strftime("%Y-%m-%d %H:%M:%S")}
+        if self.report_name == 'settlement_details_report':
+            if self._cursor_value:
+                return {self.cursor_field: self._cursor_value}
+            else:
+                {self.cursor_field: self.start_batch}
         else:
-            return {self.cursor_field: self.start_date.strftime("%Y-%m-%d %H:%M:%S")}
+            if self._cursor_value:
+                return {self.cursor_field: self._cursor_value.strftime("%Y-%m-%d %H:%M:%S")}
+            else:
+                return {self.cursor_field: self.start_date.strftime("%Y-%m-%d %H:%M:%S")}
 
     @state.setter
     def state(self, value: Mapping[str, Any]):
         if value and self.cursor_field in value:
-            self._cursor_value = datetime.strptime(value[self.cursor_field], "%Y-%m-%d %H:%M:%S")
+            if self.report_name == 'settlement_details_report':
+                self._cursor_value = value[self.cursor_field]
+            else:
+                self._cursor_value = datetime.strptime(value[self.cursor_field], "%Y-%m-%d %H:%M:%S")
 
     def get_updated_state(
         self, current_stream_state: Mapping[str, Any], latest_record: Mapping[str, Any]
