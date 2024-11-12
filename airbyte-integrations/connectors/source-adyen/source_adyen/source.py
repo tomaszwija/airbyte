@@ -186,8 +186,10 @@ class ExchangeRateReport(IncrementalAdyenStream):
             # we need to skip first 4 rows as it's an "about these rates text"
             df = pd.read_csv(io.BytesIO(response.content), skiprows=4)
             df.columns = df.columns.str.replace(" ", "_")
-            # drop description field
+            if 'Valid_from' in df.columns:
+                df.rename(columns={'Valid_from': 'Valid_From'}, inplace=True)
             df = df.drop(columns=["About_these_rates", "Symbol"], errors="ignore")
+            df = df[df['Base_Currency'] == 'EUR']
             numeric_columns = ('Exponent', 'Exchange_Rate')
             # convert to timezone-aware datetime
             df["Valid_From"] = pd.to_datetime(df["Valid_From"]).apply(
