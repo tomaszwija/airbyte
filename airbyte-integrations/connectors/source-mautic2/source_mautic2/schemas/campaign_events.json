@@ -1,0 +1,278 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "campaign_id": {
+      "type": "integer"
+    },
+    "campaign_updated_at": {
+      "type":"string",
+      "format":"date-time"
+    },
+    "campaign_date_modified": {
+      "type":"string",
+      "format":"date-time"
+    },
+    "campaign_date_added": {
+      "type":"string",
+      "format":"date-time"
+    },
+    "event_id": {
+      "type": "integer"
+    },
+    "event_name": {
+      "type": "string"
+    },
+    "event_description": {
+      "type": "string"
+    },
+    "event_type": {
+      "type": "string"
+    },
+    "event_eventType": {
+      "type": "string"
+    },
+    "event_channel": {
+      "type": "string"
+    },
+    "event_channelId": {
+      "type": ["null","integer"]
+    },
+    "event_order": {
+      "type": ["null","integer"]
+    },
+    "event_properties_canvasSettings_droppedX": {
+      "type": "string"
+    },
+    "event_properties_canvasSettings_droppedY": {
+      "type": "string"
+    },
+    "event_properties_name": {
+      "type": "string"
+    },
+    "event_properties_triggerMode": {
+      "type": "string"
+    },
+    "event_properties_triggerDate": {
+      "type": ["string","null"],
+      "format":"date-time"
+    },
+    "event_properties_triggerInterval": {
+      "type": ["null","integer"]
+    },
+    "event_properties_triggerIntervalUnit": {
+      "type": "string"
+    },
+    "event_properties_triggerHour": {
+      "type": "string"
+    },
+    "event_properties_triggerRestrictedStartHour": {
+      "type": "string"
+    },
+    "event_properties_triggerRestrictedStopHour": {
+      "type": "string"
+    },
+    "event_properties_anchor": {
+      "type": "string"
+    },
+    "event_properties_properties_email": {
+      "type": ["null","string"]
+    },
+    "event_properties_properties_email_type": {
+      "type": "string"
+    },
+    "event_properties_properties_priority": {
+      "type": ["null","integer"]
+    },
+    "event_properties_properties_attempts": {
+      "type": ["null","integer"]
+    },
+    "event_properties_type": {
+      "type": "string"
+    },
+    "event_properties_eventType": {
+      "type": "string"
+    },
+    "event_properties_anchorEventType": {
+      "type": "string"
+    },
+    "event_properties_campaignId": {
+      "type": "string"
+    },
+    "event_properties__token": {
+      "type": "string"
+    },
+    "event_properties_buttons_save": {
+      "type": "string"
+    },
+    "event_properties_email": {
+      "type": "string"
+    },
+    "event_properties_email_type": {
+      "type": "string"
+    },
+    "event_properties_priority": {
+      "type": ["null","integer"]
+    },
+    "event_properties_attempts": {
+      "type": ["null","integer"]
+    },
+    "event_triggerDate": {
+      "type": ["string","null"]
+    },
+    "event_triggerInterval": {
+      "type": ["null","integer"]
+    },
+    "event_triggerIntervalUnit": {
+      "type": "string"
+    },
+    "event_triggerHour": {
+      "type": "string"
+    },
+    "event_triggerRestrictedStartHour": {
+      "type": "string"
+    },
+    "event_triggerRestrictedStopHour": {
+      "type": "string"
+    },
+    "event_triggerRestrictedDaysOfWeek": {
+      "type": "array",
+      "items": {}
+    },
+    "event_triggerMode": {
+      "type": "string"
+    },
+    "event_decisionPath": {
+      "type": "string"
+    },
+    "event_parent_id": {
+      "type": ["null","integer"]
+    },
+    "event_parent_name": {
+      "type": "string"
+    },
+    "event_parent_description": {
+      "type": "string"
+    },
+    "event_parent_type": {
+      "type": "string"
+    },
+    "event_parent_eventType": {
+      "type": "string"
+    },
+    "event_parent_channel": {
+      "type": "string"
+    },
+    "event_parent_channelId": {
+      "type": "string"
+    },
+    "event_parent_order": {
+      "type": ["null","integer"]
+    },
+    "event_parent_properties_canvasSettings_droppedX": {
+      "type": "string"
+    },
+    "event_parent_properties_canvasSettings_droppedY": {
+      "type": "string"
+    },
+    "event_parent_properties_name": {
+      "type": "string"
+    },
+    "event_parent_properties_triggerMode": {
+      "type": "string"
+    },
+    "event_parent_properties_triggerDate": {
+      "type": "string"
+    },
+    "event_parent_properties_triggerInterval": {
+      "type": "string"
+    },
+    "event_parent_properties_triggerIntervalUnit": {
+      "type": "string"
+    },
+    "event_parent_properties_triggerHour": {
+      "type": "string"
+    },
+    "event_parent_properties_triggerRestrictedStartHour": {
+      "type": "string"
+    },
+    "event_parent_properties_triggerRestrictedStopHour": {
+      "type": "string"
+    },
+    "event_parent_properties_anchor": {
+      "type": "string"
+    },
+    "event_parent_properties_properties_field": {
+      "type": "string"
+    },
+    "event_parent_properties_properties_operator": {
+      "type": "string"
+    },
+    "event_parent_properties_type": {
+      "type": "string"
+    },
+    "event_parent_properties_eventType": {
+      "type": "string"
+    },
+    "event_parent_properties_anchorEventType": {
+      "type": "string"
+    },
+    "event_parent_properties_campaignId": {
+      "type": "string"
+    },
+    "event_parent_properties__token": {
+      "type": "string"
+    },
+    "event_parent_properties_buttons_save": {
+      "type": "string"
+    },
+    "event_parent_properties_field": {
+      "type": "string"
+    },
+    "event_parent_properties_operator": {
+      "type": "string"
+    },
+    "event_parent_properties_value": {
+      "type": "string"
+    },
+    "event_parent_triggerDate": {
+      "type": "string"
+    },
+    "event_parent_triggerInterval": {
+      "type": ["null","integer"]
+    },
+    "event_parent_triggerIntervalUnit": {
+      "type": "string"
+    },
+    "event_parent_triggerHour": {
+      "type": "string"
+    },
+    "event_parent_triggerRestrictedStartHour": {
+      "type": "string"
+    },
+    "event_parent_triggerRestrictedStopHour": {
+      "type": "string"
+    },
+    "event_parent_triggerRestrictedDaysOfWeek": {
+      "type": "array",
+      "items": {}
+    },
+    "event_parent_triggerMode": {
+      "type": "string"
+    },
+    "event_parent_decisionPath": {
+      "type": "string"
+    },
+    "event_parent_parent": {
+      "type": "string"
+    },
+    "event_parent_children": {
+      "type": "array",
+      "items": {}
+    },
+    "event_children": {
+      "type": "array",
+      "items": {}
+    }
+  }
+}

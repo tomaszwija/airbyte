@@ -1,0 +1,64 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "isPublished": {
+        "type": ["null", "boolean"]
+      },
+      "dateAdded": {
+        "type": ["null", "string"],
+        "format":"date-time"
+      },
+      "dateModified": {
+        "type": ["null", "string"],
+        "format":"date-time"
+      },
+      "createdBy": {
+        "type": ["null", "integer"]
+      },
+      "createdByUser": {
+        "type": ["null", "string"]
+      },
+      "modifiedBy": {
+        "type": ["null", "integer"]
+      },
+      "modifiedByUser": {
+        "type": ["null", "string"]
+      },
+      "id": {
+        "type": "integer"
+      },
+      "name": {
+        "type": ["null", "string"]
+      },
+      "category": {
+        "type": ["null", "object"],
+        "properties": {
+          "createdByUser": {
+            "type": ["null", "string"]
+          },
+          "modifiedByUser": {
+            "type":["null","string"]
+          },
+          "id": {
+            "type": ["null", "integer"]
+          },
+          "title": {
+            "type": ["null", "string"]
+          },
+          "alias": {
+            "type": ["null", "string"]
+          },
+          "description": {
+            "type": ["null","string"]
+          },
+          "color": {
+            "type": ["null","string"]
+          },
+          "bundle": {
+            "type": ["null", "string"]
+          }
+        }
+      }
+    }
+  }

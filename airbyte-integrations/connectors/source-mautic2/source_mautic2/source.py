@@ -153,7 +153,6 @@ class AuditLog(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
-        breakpoint()
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
@@ -367,6 +366,7 @@ class CampaignLeadEventLogStats(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
+        breakpoint()
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
