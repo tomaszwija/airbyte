@@ -875,7 +875,7 @@ class Contacts(IncrementalMauticStream):
         next_dateAdded = self.start_date
         alt_cursor_field_snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', self.alt_cursor_field).lower()
         cursor_field_snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', self.cursor_field).lower()
-
+        breakpoint()
         if stream_state.get(self.cursor_field) is not None:
             next_dateAdded = stream_state.get(self.cursor_field)
         if stream_state.get(self.alt_cursor_field) is not None:
