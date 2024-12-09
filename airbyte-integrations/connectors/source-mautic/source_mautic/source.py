@@ -898,8 +898,8 @@ class Contacts(IncrementalMauticStream):
         alt_cursor_field_snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', self.alt_cursor_field).lower()
         cursor_field_snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', self.cursor_field).lower()
         stream_state = stream_state or {}
-        next_dateAdded = datetime.strptime(stream_state.get(self.cursor_field, self.start_date.strftime("%Y-%m-%d %H:%M:%S")), "%Y-%m-%d %H:%M:%S")
-        next_dateModified = datetime.strptime(stream_state.get(self.alt_cursor_field, self.start_date.strftime("%Y-%m-%d %H:%M:%S")), "%Y-%m-%d %H:%M:%S")
+        next_dateAdded = stream_state.get(self.cursor_field, self.start_date.strftime("%Y-%m-%d %H:%M:%S"))
+        next_dateModified = stream_state.get(self.alt_cursor_field, self.start_date.strftime("%Y-%m-%d %H:%M:%S"))
 
         slices = []
 
