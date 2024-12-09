@@ -63,6 +63,29 @@ class IncrementalMauticStream(MauticStream, ABC):
     # TODO: Fill in to checkpoint stream reads after N records. This prevents re-reading of data if the stream fails for any reason.
     state_checkpoint_interval = None
 
+    @property
+    def state(self) -> Mapping[str, Any]:
+        if self._cursor_value:
+            return {self.cursor_field: self._cursor_value.strftime("%Y-%m-%d %H:%M:%S")}
+        else:
+            return {self.cursor_field: self.start_date.strftime("%Y-%m-%d %H:%M:%S")}
+
+    @state.setter
+    def state(self, value: Mapping[str, Any]):
+        if value and self.cursor_field in value:
+            self._cursor_value = datetime.strptime(value[self.cursor_field], "%Y-%m-%d %H:%M:%S")
+
+    def get_updated_state(
+        self, current_stream_state: Mapping[str, Any], latest_record: Mapping[str, Any]
+    ) -> Mapping[str, Any]:
+        
+        current_state_value = current_stream_state.get(self.cursor_field, self.start_date.strftime("%Y-%m-%d %H:%M:%S"))
+        current_parsed_date = datetime.strptime(current_state_value, "%Y-%m-%d %H:%M:%S")
+        
+        # Update to latest cursor value if available, else retain the last known state
+        latest_record_date = max(current_parsed_date, self._cursor_value) if self._cursor_value else current_parsed_date
+        
+        return {self.cursor_field: latest_record_date.strftime("%Y-%m-%d %H:%M:%S")}
     # @property
     # def cursor_field(self) -> str:
     #     """
@@ -153,7 +176,6 @@ class AuditLog(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
-        breakpoint()
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
@@ -875,11 +897,9 @@ class Contacts(IncrementalMauticStream):
         next_dateAdded = self.start_date
         alt_cursor_field_snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', self.alt_cursor_field).lower()
         cursor_field_snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', self.cursor_field).lower()
-        breakpoint()
-        if stream_state.get(self.cursor_field) is not None:
-            next_dateAdded = stream_state.get(self.cursor_field)
-        if stream_state.get(self.alt_cursor_field) is not None:
-            next_dateModified = stream_state.get(self.alt_cursor_field)
+        stream_state = stream_state or {}
+        next_dateAdded = datetime.strptime(stream_state.get(self.cursor_field, self.start_date.strftime("%Y-%m-%d %H:%M:%S")), "%Y-%m-%d %H:%M:%S")
+        next_dateModified = datetime.strptime(stream_state.get(self.alt_cursor_field, self.start_date.strftime("%Y-%m-%d %H:%M:%S")), "%Y-%m-%d %H:%M:%S")
 
         slices = []
 
