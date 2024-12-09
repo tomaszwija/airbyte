@@ -176,6 +176,7 @@ class AuditLog(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
+        stream_state = stream_state or {}
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
@@ -389,6 +390,7 @@ class CampaignLeadEventLogStats(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
+        stream_state = stream_state or {}
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
@@ -459,6 +461,7 @@ class LeadDoNotContactStats(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
+        stream_state = stream_state or {}
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
@@ -533,7 +536,7 @@ class EmailStats(IncrementalMauticStream):
         # the default start date comes from the user input
         next_date_read = self.start_date
         next_date_sent = self.start_date
-
+        stream_state = stream_state or {}
         if stream_state.get(self.cursor_field) is not None:
             next_date_read = stream_state.get(self.cursor_field)
         if stream_state.get(self.alt_cursor_field) is not None:
@@ -667,6 +670,7 @@ class PageHitStats(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
+        stream_state = stream_state or {}
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
@@ -741,6 +745,7 @@ class EmailEvents(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
+        stream_state = stream_state or {}
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
@@ -819,6 +824,7 @@ class DoNotContactEvents(IncrementalMauticStream):
             params.update(next_page_token)
 
         next_date = self.start_date
+        stream_state = stream_state or {}
         if stream_state.get(self.cursor_field) is not None:
             next_date = stream_state.get(self.cursor_field)
 
