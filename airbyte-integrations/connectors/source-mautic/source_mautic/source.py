@@ -888,10 +888,6 @@ class Contacts(IncrementalMauticStream):
             #merged_params['limit'] = self.limit
             slices.append(merged_params)
 
-
-        #return slices
-
-        print(f"STATE {slices}")
         yield from slices
 
     def request_params(
