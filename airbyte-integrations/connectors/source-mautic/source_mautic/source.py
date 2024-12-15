@@ -1022,6 +1022,7 @@ class Contacts(IncrementalMauticStream):
         alt_cursor_value = latest_record.get(self.alt_cursor_field, "") or current_stream_state.get(self.alt_cursor_field)
         cursor_value = latest_record.get(self.cursor_field, "")
 
+        print(f"Current streamstate {current_stream_state}")
         print(f"Updating state with alt_cursor_field={alt_cursor_value}, cursor_field={cursor_value}")
         
         if current_stream_state:
