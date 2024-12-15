@@ -1019,24 +1019,34 @@ class Contacts(IncrementalMauticStream):
         yield from response_dict
 
     def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
-        """
-        Override to determine the latest state after reading the latest record. This typically compared the cursor_field from the latest record and
-        the current state and picks the 'most' recent cursor. This is how a stream's state is determined. Required for incremental.
-        """
+        alt_cursor_value = latest_record.get(self.alt_cursor_field, "") or self.start_date
+        cursor_value = latest_record.get(self.cursor_field, "")
 
-        # first iteration (current_stream_state is empty)
-        if len(current_stream_state.keys()) > 0:
-            # if the dateModified is not empty, we'll save it to a class attribute
-            if latest_record.get(self.alt_cursor_field, ""):
-                dateModified_max_value = max(current_stream_state.get(self.alt_cursor_field), latest_record.get(self.alt_cursor_field, "") or self.start_date)
-                self.alt_cursor_field_current_stream_value = dateModified_max_value
+        if current_stream_state:
+            if alt_cursor_value:
+                date_modified_max_value = max(
+                    current_stream_state.get(self.alt_cursor_field, self.start_date),
+                    alt_cursor_value
+                )
+                self.alt_cursor_field_current_stream_value = date_modified_max_value
+            else:
+                date_modified_max_value = current_stream_state.get(self.alt_cursor_field, self.start_date)
 
-            dateAdded_max_value = max(current_stream_state.get(self.cursor_field, ""), latest_record.get(self.cursor_field, ""))
+            date_added_max_value = max(
+                current_stream_state.get(self.cursor_field, ""),
+                cursor_value
+            )
 
-            return {self.alt_cursor_field: self.alt_cursor_field_current_stream_value,self.cursor_field:dateAdded_max_value}
+            return {
+                self.alt_cursor_field: date_modified_max_value,
+                self.cursor_field: date_added_max_value
+            }
 
-        else:
-            return {self.cursor_field:latest_record.get(self.cursor_field,""),self.alt_cursor_field:latest_record.get(self.alt_cursor_field,"")}
+        # First iteration (current_stream_state is empty)
+        return {
+            self.cursor_field: cursor_value or self.start_date,
+            self.alt_cursor_field: alt_cursor_value or self.start_date
+        }
 
 
 # Source
