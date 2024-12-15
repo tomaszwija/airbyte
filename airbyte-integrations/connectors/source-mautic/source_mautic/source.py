@@ -1037,44 +1037,57 @@ class Contacts(IncrementalMauticStream):
 
         yield from response_dict
 
-    def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
-        alt_cursor_value = latest_record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field)
-        cursor_value = latest_record.get(self.cursor_field, "")
 
-        print(f"Current streamstate {self.state}")
-        print(f"Updating state with alt_cursor_field={alt_cursor_value}, cursor_field={cursor_value}")
-        
-        breakpoint()
-        
-        if self.state:
-            if alt_cursor_value:
-                date_modified_max_value = max(
-                    self.state.get(self.alt_cursor_field, self.start_date),
-                    alt_cursor_value
-                )
-                self.alt_cursor_field_current_stream_value = date_modified_max_value
-            else:
-                date_modified_max_value = self.state.get(self.alt_cursor_field, self.start_date)
-
-            date_added_max_value = max(
-                self.state.get(self.cursor_field, ""),
-                cursor_value
-            )
-
+    def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
+        for record in super().read_records(*args, **kwargs):
+            alt_cursor_value = record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field) or self.start_date
+            cursor_value = record.get(self.cursor_field, "")
             updated_state = {
-                self.alt_cursor_field: date_modified_max_value,
-                self.cursor_field: date_added_max_value
+                self.alt_cursor_field: alt_cursor_value,
+                self.cursor_field: cursor_value
             }
-            self.state = updated_state  # Call the setter to update internal state
+            self.state = updated_state
+            print(f"Current streamstate {self.state}")
+            yield record
 
-        else:
-            # First iteration without state
-            updated_state = {
-                self.alt_cursor_field: self.start_date,
-                self.cursor_field: self.start_date
-            }
+    
+    # def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
+    #     alt_cursor_value = latest_record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field)
+    #     cursor_value = latest_record.get(self.cursor_field, "")
+
+    #     print(f"Current streamstate {self.state}")
+    #     print(f"Updating state with alt_cursor_field={alt_cursor_value}, cursor_field={cursor_value}")
         
-        return updated_state
+
+    #     if self.state:
+    #         if alt_cursor_value:
+    #             date_modified_max_value = max(
+    #                 self.state.get(self.alt_cursor_field, self.start_date),
+    #                 alt_cursor_value
+    #             )
+    #             self.alt_cursor_field_current_stream_value = date_modified_max_value
+    #         else:
+    #             date_modified_max_value = self.state.get(self.alt_cursor_field, self.start_date)
+
+    #         date_added_max_value = max(
+    #             self.state.get(self.cursor_field, ""),
+    #             cursor_value
+    #         )
+
+    #         updated_state = {
+    #             self.alt_cursor_field: date_modified_max_value,
+    #             self.cursor_field: date_added_max_value
+    #         }
+    #         self.state = updated_state  # Call the setter to update internal state
+
+    #     else:
+    #         # First iteration without state
+    #         updated_state = {
+    #             self.alt_cursor_field: self.start_date,
+    #             self.cursor_field: self.start_date
+    #         }
+        
+    #     return updated_state
       
 
 
