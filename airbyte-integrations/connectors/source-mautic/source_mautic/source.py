@@ -1019,7 +1019,7 @@ class Contacts(IncrementalMauticStream):
         yield from response_dict
 
     def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
-        alt_cursor_value = latest_record.get(self.alt_cursor_field, "") or self.start_date
+        alt_cursor_value = latest_record.get(self.alt_cursor_field, "") or current_stream_state.get(self.alt_cursor_field)
         cursor_value = latest_record.get(self.cursor_field, "")
 
         print(f"Updating state with alt_cursor_field={alt_cursor_value}, cursor_field={cursor_value}")
