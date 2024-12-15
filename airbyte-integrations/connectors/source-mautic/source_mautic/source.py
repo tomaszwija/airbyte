@@ -1040,6 +1040,7 @@ class Contacts(IncrementalMauticStream):
 
     def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
         for record in super().read_records(*args, **kwargs):
+            print(f"streamstate {record}")
             alt_cursor_value = record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field) or self.start_date
             cursor_value = record.get(self.cursor_field, "")
             updated_state = {
