@@ -891,7 +891,7 @@ class Contacts(IncrementalMauticStream):
 
         #return slices
 
-        print(slices)
+        print(f"STATE {slices}")
         yield from slices
 
     def request_params(
