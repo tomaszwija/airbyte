@@ -883,8 +883,26 @@ class Contacts(IncrementalMauticStream):
         self.start_date = start_date
         self.limit = 1000
 
-    def path(self, **kwargs) -> str:
+    @property
+    def state(self) -> Mapping[str, Any]:
+        """
+        Get the current state of the stream.
+        """
+        return self._state
+    
+    @state.setter
+    def state(self, value: Mapping[str, Any]):
+        """
+        Set the state of the stream. Updates cursor values based on the incoming state.
+        """
+        if value:
+            if self.cursor_field in value:
+                self._cursor_value = value[self.cursor_field]
+            if self.alt_cursor_field in value:
+                self.alt_cursor_field_current_stream_value = value[self.alt_cursor_field]
+        self._state = value or {}
 
+    def path(self, **kwargs) -> str:
         return "contacts"
 
     def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
@@ -1040,10 +1058,12 @@ class Contacts(IncrementalMauticStream):
                 cursor_value
             )
 
-            return {
+            updated_state = {
                 self.alt_cursor_field: date_modified_max_value,
                 self.cursor_field: date_added_max_value
             }
+            self.state = updated_state  # Call the setter to update internal state
+            return updated_state
 
         # First iteration (current_stream_state is empty)
         return {
