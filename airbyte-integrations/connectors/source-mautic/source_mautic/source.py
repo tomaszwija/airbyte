@@ -60,83 +60,8 @@ class IncrementalMauticStream(MauticStream, ABC):
         super().__init__(**kwargs)
         self.limit = limit
 
-    # TODO: Fill in to checkpoint stream reads after N records. This prevents re-reading of data if the stream fails for any reason.
     state_checkpoint_interval = None
 
-    @property
-    def state(self) -> Mapping[str, Any]:
-        if self._cursor_value:
-            return {self.cursor_field: self._cursor_value.strftime("%Y-%m-%d %H:%M:%S")}
-        else:
-            return {self.cursor_field: self.start_date.strftime("%Y-%m-%d %H:%M:%S")}
-
-    @state.setter
-    def state(self, value: Mapping[str, Any]):
-        if value and self.cursor_field in value:
-            self._cursor_value = datetime.strptime(value[self.cursor_field], "%Y-%m-%d %H:%M:%S")
-
-    def get_updated_state(
-        self, current_stream_state: Mapping[str, Any], latest_record: Mapping[str, Any]
-    ) -> Mapping[str, Any]:
-        
-        current_state_value = current_stream_state.get(self.cursor_field, self.start_date.strftime("%Y-%m-%d %H:%M:%S"))
-        current_parsed_date = datetime.strptime(current_state_value, "%Y-%m-%d %H:%M:%S")
-        
-        # Update to latest cursor value if available, else retain the last known state
-        latest_record_date = max(current_parsed_date, self._cursor_value) if self._cursor_value else current_parsed_date
-        
-        return {self.cursor_field: latest_record_date.strftime("%Y-%m-%d %H:%M:%S")}
-    # @property
-    # def cursor_field(self) -> str:
-    #     """
-    #     TODO
-    #     Override to return the cursor field used by this stream e.g: an API entity might always use created_at as the cursor field. This is
-    #     usually id or date based. This field's presence tells the framework this in an incremental stream. Required for incremental.
-
-    #     :return str: The name of the cursor field.
-    #     """
-    #     return "dateModified"
-
-    # def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
-    #     """
-    #     Override to determine the latest state after reading the latest record. This typically compared the cursor_field from the latest record and
-    #     the current state and picks the 'most' recent cursor. This is how a stream's state is determined. Required for incremental.
-    #     """
-    #     state_value = max(current_stream_state.get(self.cursor_field, ""), latest_record.get(self.cursor_field, ""))
-    #     return {self.cursor_field: state_value}
-
-    # def request_params(
-    #     self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
-    # ) -> MutableMapping[str, Any]:
-
-    #     next_date = self.start_date
-    #     if stream_state.get(self.cursor_field) is not None:
-    #         next_date = stream_state.get(self.cursor_field)
-
-    #     where = [
-    #         # updated
-    #         {
-    #             'where[0][col]': 'dateModified',
-    #             'where[0][expr]': 'gte',
-    #             'where[0][val]': next_date,
-    #         },
-    #         #new users
-    #         {
-    #             'where[0][col]': 'dateAdded',
-    #             'where[0][expr]': 'gte',
-    #             'where[0][val]': next_date,
-    #             'where[1][col]': 'dateModified',
-    #             'where[1][expr]': 'isNull',
-    #         }
-    #     ]
-
-    #     #where_clause = self.parse_where(where[0])
-    #     params = {}
-    #     params['limit'] = self.limit
-    #     for key,val in where[0].items():
-    #         params[key] = val
-
-    #     return params
 
 
 class AuditLog(IncrementalMauticStream):
