@@ -1065,14 +1065,15 @@ class Contacts(IncrementalMauticStream):
             }
             self.state = updated_state  # Call the setter to update internal state
 
-            print(f"Updated streamstate {self.state}")
-            return updated_state
-
-        # First iteration (current_stream_state is empty)
-        return {
-            self.cursor_field: cursor_value or self.start_date,
-            self.alt_cursor_field: alt_cursor_value or self.start_date
-        }
+        else:
+            # First iteration without state
+            updated_state = {
+                self.alt_cursor_field: self.start_date,
+                self.cursor_field: self.start_date
+            }
+        
+        return updated_state
+      
 
 
 # Source
