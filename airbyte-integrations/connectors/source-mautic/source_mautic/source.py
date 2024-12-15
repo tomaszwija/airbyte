@@ -1044,18 +1044,18 @@ class Contacts(IncrementalMauticStream):
         print(f"Current streamstate {self.state}")
         print(f"Updating state with alt_cursor_field={alt_cursor_value}, cursor_field={cursor_value}")
         
-        if current_stream_state:
+        if self.state:
             if alt_cursor_value:
                 date_modified_max_value = max(
-                    current_stream_state.get(self.alt_cursor_field, self.start_date),
+                    self.state.get(self.alt_cursor_field, self.start_date),
                     alt_cursor_value
                 )
                 self.alt_cursor_field_current_stream_value = date_modified_max_value
             else:
-                date_modified_max_value = current_stream_state.get(self.alt_cursor_field, self.start_date)
+                date_modified_max_value = self.state.get(self.alt_cursor_field, self.start_date)
 
             date_added_max_value = max(
-                current_stream_state.get(self.cursor_field, ""),
+                self.state.get(self.cursor_field, ""),
                 cursor_value
             )
 
@@ -1064,6 +1064,8 @@ class Contacts(IncrementalMauticStream):
                 self.cursor_field: date_added_max_value
             }
             self.state = updated_state  # Call the setter to update internal state
+
+            print(f"Updated streamstate {self.state}")
             return updated_state
 
         # First iteration (current_stream_state is empty)
