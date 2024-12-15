@@ -1044,6 +1044,8 @@ class Contacts(IncrementalMauticStream):
         print(f"Current streamstate {self.state}")
         print(f"Updating state with alt_cursor_field={alt_cursor_value}, cursor_field={cursor_value}")
         
+        breakpoint()
+        
         if self.state:
             if alt_cursor_value:
                 date_modified_max_value = max(
