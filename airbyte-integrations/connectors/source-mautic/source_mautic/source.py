@@ -72,7 +72,7 @@ class DoNotContactEvents(IncrementalMauticStream):
         super().__init__(**kwargs)
         self.url_base = url_base
         self.start_date = start_date
-        self.limit = 1000 #10000
+        self.limit = 10 #10000
 
     def path(self, **kwargs) -> str:
         return "contacts/activity"
