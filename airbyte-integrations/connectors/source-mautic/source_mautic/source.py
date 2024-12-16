@@ -150,5 +150,5 @@ class SourceMautic(AbstractSource):
         url_base = f'{config["host"].strip(" /")}/api'
        
         return [
-            DoNotContactEvents(authenticator=auth,start_date=config['start_date'],url_base=url_base,**args),
+            DoNotContactEvents(authenticator=auth,start_date=config['start_date'],url_base=url_base),
         ]
