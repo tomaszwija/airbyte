@@ -197,13 +197,13 @@ class Contacts(IncrementalMauticStream):
                 'where[0][val]': next_dateModified,
             },
             #new users
-            {
-                'where[0][col]': 'dateAdded',
-                'where[0][expr]': 'gte',
-                'where[0][val]': next_dateAdded,
-                'where[1][col]': 'dateModified',
-                'where[1][expr]': 'isNull',
-            }
+            # {
+            #     'where[0][col]': 'dateAdded',
+            #     'where[0][expr]': 'gte',
+            #     'where[0][val]': next_dateAdded,
+            #     'where[1][col]': 'dateModified',
+            #     'where[1][expr]': 'isNull',
+            # }
         ]
 
         for where_clause in where:
