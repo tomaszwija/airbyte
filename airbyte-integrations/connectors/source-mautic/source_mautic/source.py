@@ -72,16 +72,13 @@ class DoNotContactEvents(IncrementalMauticStream):
         super().__init__(**kwargs)
         self.url_base = url_base
         self.start_date = start_date
-        self.limit = 10 #10000
+        self.limit = 5000
 
     def path(self, **kwargs) -> str:
         return "contacts/activity"
     
     def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
         response_data = response.json()
-        print()
-        print(f"debugme: {response_data}")
-        print()
 
         self.total_records = int(response_data["total"])
         if int(response_data["maxPages"]) > int(response_data["page"]):
