@@ -236,7 +236,7 @@ class Contacts(IncrementalMauticStream):
 
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         url = response.request.path_url
-
+        print(f'debugme URL : {url}')
         response_json = response.json()
         if not "start" in url:
             print("Total records: ",response_json["total"])
