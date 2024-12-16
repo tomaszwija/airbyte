@@ -714,6 +714,7 @@ class EmailEvents(IncrementalMauticStream):
 
 class DoNotContactEvents(IncrementalMauticStream):
 
+    _state: MutableMapping[str, Any] = {}
     cursor_field = "timestamp"
     primary_key = "eventId"
     page = 0
@@ -724,6 +725,23 @@ class DoNotContactEvents(IncrementalMauticStream):
         self.url_base = url_base
         self.start_date = start_date
         self.limit = 2000
+
+    @property
+    def state(self) -> Mapping[str, Any]:
+        """
+        Get the current state of the stream.
+        """
+        return self._state
+    
+    @state.setter
+    def state(self, value: Mapping[str, Any]):
+        """
+        Set the state of the stream. Updates cursor values based on the incoming state.
+        """
+        if value:
+            if self.cursor_field in value:
+                self._cursor_value = value[self.cursor_field]
+        self._state = value or {}
 
     def path(self, **kwargs) -> str:
 
@@ -782,15 +800,27 @@ class DoNotContactEvents(IncrementalMauticStream):
 
         yield from response_json
 
-    def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
-        """
-        Override to determine the latest state after reading the latest record. This typically compared the cursor_field from the latest record and
-        the current state and picks the 'most' recent cursor. This is how a stream's state is determined. Required for incremental.
-        """
 
-        updated_state = max(current_stream_state.get(self.cursor_field, ""), latest_record.get(self.cursor_field, ""))
+    def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
+        for record in super().read_records(*args, **kwargs):
+            current_cursor_value = self.state.get(self.cursor_field, "") or self.start_date
+            cursor_value = record.get(self.cursor_field, "") or self.state.get(self.cursor_field)
+            updated_state = {
+                self.cursor_field: max(cursor_value, current_cursor_value)
+            }
+            self.state = updated_state
+            yield record
 
-        return {self.cursor_field: updated_state}
+
+    # def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
+    #     """
+    #     Override to determine the latest state after reading the latest record. This typically compared the cursor_field from the latest record and
+    #     the current state and picks the 'most' recent cursor. This is how a stream's state is determined. Required for incremental.
+    #     """
+
+    #     updated_state = max(current_stream_state.get(self.cursor_field, ""), latest_record.get(self.cursor_field, ""))
+
+    #     return {self.cursor_field: updated_state}
 
 class Contacts(IncrementalMauticStream):
 
