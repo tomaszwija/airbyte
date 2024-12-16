@@ -146,12 +146,19 @@ class Contacts(IncrementalMauticStream):
     @state.setter
     def state(self, value: Mapping[str, Any]):
         print (f"debugme STATE {value}")
+
+        # if self.state is None:
+        start_state = {
+            self.cursor_field: self.start_date,
+            self.alt_cursor_field: self.start_date
+        }
+
         if value:
             if self.cursor_field in value:
                 self._cursor_value = value[self.cursor_field]
             if self.alt_cursor_field in value:
                 self.alt_cursor_field_current_stream_value = value[self.alt_cursor_field]
-        self._state = value or {}
+        self._state = value or start_state
 
     def path(self, **kwargs) -> str:
         return "contacts"
