@@ -220,7 +220,8 @@ class Contacts(IncrementalMauticStream):
             if merged_params not in slices:
                 slices.append(merged_params)
 
-            print(f'debugme: {slices}')
+        
+        print(f'debugme: {slices}')
 
         yield from slices
 
