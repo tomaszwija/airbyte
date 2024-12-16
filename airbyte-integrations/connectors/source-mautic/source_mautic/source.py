@@ -224,11 +224,17 @@ class Contacts(IncrementalMauticStream):
             #merged_params['limit'] = self.limit
             slices.append(merged_params)
 
+        # for slice in slices:
+        #     if slice not in self.checkpointed_slices:
+        #         print(f"debugme: yielded slice: {slice}")
+        #         self.checkpointed_slices.append(slice)
+        #         yield slice
+
         for slice in slices:
-            if slice not in self.checkpointed_slices:
-                yield slice
-                print(f"debugme: yielded slice: {slice}")
-                self.checkpointed_slices.append(slice)
+            print(f"debugme: yielded slice: {slice}")
+            self.checkpointed_slices.append(slice)
+            yield slice
+                
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
