@@ -1,0 +1,251 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "points": {
+        "type": ["integer", "null"]
+      },
+      "last_active": {
+        "type": ["null", "string"],
+        "format":"date-time"
+      },
+      "title": {
+        "type": ["string","null"]
+      },
+      "firstname": {
+        "type": ["string","null"]
+      },
+      "lastname": {
+        "type": ["string","null"]
+      },
+      "company": {
+        "type": ["string","null"]
+      },
+      "position": {
+        "type": ["string","null"]
+      },
+      "email": {
+        "type": ["string","null"]
+      },
+      "phone": {
+        "type": ["string","null"]
+      },
+      "mobile": {
+        "type": ["string","null"]
+      },
+      "address1": {
+        "type": ["string","null"]
+      },
+      "address2": {
+        "type": ["string","null"]
+      },
+      "city": {
+        "type": ["string","null"]
+      },
+      "state": {
+        "type": ["string","null"]
+      },
+      "zipcode": {
+        "type": ["string","null"]
+      },
+      "timezone": {
+        "type": ["string","null"]
+      },
+      "country": {
+        "type": ["string","null"]
+      },
+      "fax": {
+        "type": ["string","null"]
+      },
+      "preferred_locale": {
+        "type": ["string","null"]
+      },
+      "attribution_date": {
+        "type": ["string","null"]
+      },
+      "attribution": {
+        "type": ["string","null"]
+      },
+      "website": {
+        "type": ["string","null"]
+      },
+      "last_app_opened": {
+        "type": ["string","null"]
+      },
+      "platform": {
+        "type": ["string","null"]
+      },
+      "user_source": {
+        "type": ["string","null"]
+      },
+      "app_language": {
+        "type": ["string","null"]
+      },
+      "social_login": {
+        "type": ["null", "string"]
+      },
+      "user_id": {
+        "type": ["integer","null"]
+      },
+      "country_code": {
+        "type": ["string","null"]
+      },
+      "state_code": {
+        "type": ["string","null"]
+      },
+      "date_of_birth": {
+        "type": ["string","null"],
+        "format":"date-time"
+      },
+      "gender": {
+        "type": ["string","null"]
+      },
+      "reg_platform": {
+        "type": ["string","null"]
+      },
+      "opt_in_status": {
+        "type": ["null", "string"]
+      },
+      "last_update_from_braze": {
+        "type": ["string","null"]
+      },
+      "login_method": {
+        "type": ["string","null"]
+      },
+      "subscription_expiry_date": {
+        "type": ["null", "string"],
+        "format":"date-time"
+      },
+      "paid_subscription": {
+        "type": ["null", "string"]
+      },
+      "paid_subscription_plan_id": {
+        "type": ["string","null"]
+      },
+      "activities_workouts_7d": {
+        "type": ["integer","null"]
+      },
+      "activities_sleep_7d": {
+        "type": ["integer","null"]
+      },
+      "activities_focus_7d": {
+        "type": ["integer","null"]
+      },
+      "activities_quiz_7d": {
+        "type": ["integer","null"]
+      },
+      "activities_meditations_7d": {
+        "type": ["integer","null"]
+      },
+      "activities_planks_7d": {
+        "type": ["integer","null"]
+      },
+      "activities_updated_at": {
+        "type": ["string","null"],
+        "format":"date-time"
+      },
+      "last_completed_workout_ti": {
+        "type": ["string","null"],
+        "format":"date-time"
+      },
+      "last_completed_meditation": {
+        "type": ["string","null"],
+        "format":"date-time"
+      },
+      "last_initiate_checkout": {
+        "type": ["string","null"],
+        "format":"date-time"
+      },
+      "gdpr_delete": {
+        "type": ["null", "string"]
+      },
+      "facebook": {
+        "type": ["string","null"]
+      },
+      "foursquare": {
+        "type": ["string","null"]
+      },
+      "instagram": {
+        "type": ["string","null"]
+      },
+      "linkedin": {
+        "type": ["string","null"]
+      },
+      "skype": {
+        "type": ["string","null"]
+      },
+      "twitter": {
+        "type": ["string","null"]
+      },
+      "isPublished": {
+        "type": ["null", "boolean"]
+      },
+      "dateAdded": {
+        "type": ["null", "string"],
+        "format":"date-time"
+      },
+      "dateModified": {
+        "type": ["string","null"],
+        "format":"date-time"
+      },
+      "createdBy": {
+        "type": ["string","null"]
+      },
+      "createdByUser": {
+        "type": ["string","null"]
+      },
+      "modifiedBy": {
+        "type": ["string","null"]
+      },
+      "modifiedByUser": {
+        "type": ["string","null"]
+      },
+      "color": {
+        "type": ["string","null"]
+      },
+      "lastActive": {
+        "type": ["null", "string"],
+        "format":"date-time"
+      },
+      "owner": {
+        "type": ["string","null"]
+      },
+      "ipAddresses": {
+        "type": "array",
+        "items": {}
+      },
+      "tags": {
+        "type": "array",
+        "items": {}
+      },
+      "utmtags": {
+        "type": "array",
+        "items": {}
+      },
+      "stage": {
+        "type": ["string","null"]
+      },
+      "dateIdentified": {
+        "type": ["string","null"],
+        "format":"date-time"
+      },
+      "preferredProfileImage": {
+        "type": ["null", "string"]
+      },
+      "doNotContact": {
+        "type": "array",
+        "items": {}
+      },
+      "frequencyRules": {
+        "type": "array",
+        "items": {}
+      },
+      "updated_at": {
+        "type": ["null", "string"],
+        "format":"date-time"
+      }
+    }
+  }
