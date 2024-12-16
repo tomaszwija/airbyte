@@ -79,6 +79,10 @@ class DoNotContactEvents(IncrementalMauticStream):
     
     def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
         response_data = response.json()
+        print()
+        print(f"debugme: {response_data}")
+        print()
+
         self.total_records = int(response_data["total"])
         if int(response_data["maxPages"]) > int(response_data["page"]):
             self.page+=1
