@@ -279,7 +279,8 @@ class Contacts(IncrementalMauticStream):
                 del data["app"]
 
             response_dict.append(data)
-            print(f'debugme response json: {data}')
+            if data is None:
+                print(f'debugme response json: {data}')
         yield from response_dict
 
 
