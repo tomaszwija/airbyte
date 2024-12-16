@@ -132,6 +132,7 @@ class Contacts(IncrementalMauticStream):
     total_records = 0
     records_count = 0
     start = 0
+    checkpointed_slices = []
 
     def __init__(self,start_date="",url_base="",**kwargs):
         super().__init__(**kwargs)
@@ -176,13 +177,58 @@ class Contacts(IncrementalMauticStream):
         else:
             return None
 
-    def stream_slices(self, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, Any]]]:
-        # Initialize state or use defaults
+    def stream_slices(self, cursor_field: List[str] = None, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, Any]]]:
+
+        next_dateModified = self.start_date
+        next_dateAdded = self.start_date
+        alt_cursor_field_snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', self.alt_cursor_field).lower()
+        cursor_field_snake_case = re.sub(r'(?<!^)(?=[A-Z])', '_', self.cursor_field).lower()
         stream_state = stream_state or {}
-        slices = ["1", "2", "3"]
+        next_dateAdded = stream_state.get(self.cursor_field, self.start_date)
+        next_dateModified = stream_state.get(self.alt_cursor_field, self.start_date)
+
+        slices = []
+
+        where = [
+            # updated
+            {
+                'where[0][col]': 'dateModified',
+                'where[0][expr]': 'gte',
+                'where[0][val]': next_dateModified,
+            },
+            #new users
+            {
+                'where[0][col]': 'dateAdded',
+                'where[0][expr]': 'gte',
+                'where[0][val]': next_dateAdded,
+                'where[1][col]': 'dateModified',
+                'where[1][expr]': 'isNull',
+            }
+        ]
+
+        for where_clause in where:
+            where_clause_params = {}
+            order_by_params = {}
+            order_by_params["orderByDir"] = "ASC"
+            for key,val in where_clause.items():
+                where_clause_params[key] = val
+
+                # it's super important to have the correct order for incremental load
+                # because the state is coming from the stream and save the last row as the state
+                # therefore we set the correct field in each slice to the orderBy
+                if key == 'where[0][col]' and val == 'dateModified':
+                    order_by_params["orderBy"] = alt_cursor_field_snake_case
+                if key == 'where[0][col]' and val == 'dateAdded':
+                    order_by_params["orderBy"] = cursor_field_snake_case
+            merged_params = {**where_clause_params,**order_by_params}
+            #merged_params['limit'] = self.limit
+            slices.append(merged_params)
+
         for slice in slices:
-            print(f"debugme: Yielding slice: {slice}")
-            yield slice
+            if slice not in self.checkpointed_slices:
+                yield slice
+                print(f"debugme: yielded slice: {slice}")
+                self.checkpointed_slices.append(slice)
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
