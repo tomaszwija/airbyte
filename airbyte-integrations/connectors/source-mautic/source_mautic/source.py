@@ -218,6 +218,8 @@ class Contacts(IncrementalMauticStream):
             #merged_params['limit'] = self.limit
             slices.append(merged_params)
 
+            print(f'debugme: {slices}')
+
         yield from slices
 
     def request_params(
