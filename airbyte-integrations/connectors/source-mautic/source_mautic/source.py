@@ -225,7 +225,7 @@ class Contacts(IncrementalMauticStream):
         for slice in slices:
             print(f'debugme slice: {slice}')
         print('debugme: --------')
-        yield from slices
+        yield from iter(slices)
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
