@@ -238,7 +238,7 @@ class Contacts(IncrementalMauticStream):
         url = response.request.path_url
         print(f'debugme URL : {url}')
         response_json = response.json()
-        print(f'debugme response json: {response_json}')
+        
         if not "start" in url:
             print("Total records: ",response_json["total"])
         response_dict = []
@@ -279,7 +279,7 @@ class Contacts(IncrementalMauticStream):
                 del data["app"]
 
             response_dict.append(data)
-
+            print(f'debugme response json: {data}')
         yield from response_dict
 
 
