@@ -145,7 +145,7 @@ class Contacts(IncrementalMauticStream):
     
     @state.setter
     def state(self, value: Mapping[str, Any]):
-        print (f"debugme STATE {value}")
+        # print (f"debugme STATE {value}")
 
         # if self.state is None:
         start_state = {
@@ -284,7 +284,7 @@ class Contacts(IncrementalMauticStream):
 
     def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
         for record in super().read_records(*args, **kwargs):
-            print(f"debugme: state {self.state} / record {record.get(self.alt_cursor_field, '')} / startdate {self.start_date}")
+            # print(f"debugme: state {self.state} / record {record.get(self.alt_cursor_field, '')} / startdate {self.start_date}")
             current_alt_cursor_value = self.state.get(self.alt_cursor_field, self.start_date) or self.start_date
             current_cursor_value = self.state.get(self.cursor_field, "") or self.start_date
             alt_cursor_value = record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field)
