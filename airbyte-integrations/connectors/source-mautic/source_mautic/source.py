@@ -217,8 +217,9 @@ class Contacts(IncrementalMauticStream):
             merged_params = {**where_clause_params,**order_by_params}
             #merged_params['limit'] = self.limit
             slices.append(merged_params)
-            
+
             if merged_params not in slices:
+                print(f'debugme yielding {merged_params}')
                 yield merged_params
             else:
                 yield {}
