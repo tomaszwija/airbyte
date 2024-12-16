@@ -139,6 +139,10 @@ class Contacts(IncrementalMauticStream):
         self.start_date = start_date
         self.limit = 2000
 
+    @property
+    def state(self) -> Mapping[str, Any]:
+        return self._state
+    
     @state.setter
     def state(self, value: Mapping[str, Any]):
         if value:
