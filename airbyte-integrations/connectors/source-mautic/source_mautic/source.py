@@ -218,11 +218,9 @@ class Contacts(IncrementalMauticStream):
             #merged_params['limit'] = self.limit
             slices.append(merged_params)
 
-            if merged_params not in slices:
-                print(f'debugme yielding {merged_params}')
-                yield merged_params
-            else:
-                yield {}
+            print(f'debugme: {merged_params}')
+
+        yield from slices
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
@@ -281,8 +279,7 @@ class Contacts(IncrementalMauticStream):
                 del data["app"]
 
             response_dict.append(data)
-            if data is None:
-                print(f'debugme response json: {data}')
+       
         yield from response_dict
 
 
