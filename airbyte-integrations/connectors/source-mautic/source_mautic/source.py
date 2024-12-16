@@ -292,6 +292,8 @@ class Contacts(IncrementalMauticStream):
                 self.cursor_field: max(cursor_value, current_cursor_value)
             }
             self.state = updated_state
+            if self.state is None:
+                print('debugme WTF WTF')
             yield record
 
     
