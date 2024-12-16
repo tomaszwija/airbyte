@@ -167,8 +167,11 @@ class Contacts(IncrementalMauticStream):
         response_data = response.json()
         self.total_records = int(response_data["total"])
 
+        print(f"debugme: Pagination current start: {self.start}")
+
         if int(response_data["total"]) >= self.start:
             self.start+=self.limit
+            print(f"debugme: Pagination next start: {self.start}")
             return {"start": self.start}
         else:
             return None
@@ -181,6 +184,9 @@ class Contacts(IncrementalMauticStream):
         stream_state = stream_state or {}
         next_dateAdded = stream_state.get(self.cursor_field, self.start_date)
         next_dateModified = stream_state.get(self.alt_cursor_field, self.start_date)
+
+
+        print(f"debugme: stream_slices called with state: {stream_state}")
 
         slices = []
 
@@ -217,15 +223,10 @@ class Contacts(IncrementalMauticStream):
             merged_params = {**where_clause_params,**order_by_params}
             #merged_params['limit'] = self.limit
             slices.append(merged_params)
-
-
-            print(f'debugme: {merged_params}')
-
-        print('debugme: --------')
+   
         for slice in slices:
-            print(f'debugme slice: {slice}')
-        print('debugme: --------')
-        yield from iter(slices)
+            print(f"debugme: Yielding slice: {slice}")
+            yield slice
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
