@@ -145,6 +145,7 @@ class Contacts(IncrementalMauticStream):
     
     @state.setter
     def state(self, value: Mapping[str, Any]):
+        print (f"debugme STATE {value}")
         if value:
             if self.cursor_field in value:
                 self._cursor_value = value[self.cursor_field]
