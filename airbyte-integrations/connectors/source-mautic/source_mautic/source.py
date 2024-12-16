@@ -216,7 +216,9 @@ class Contacts(IncrementalMauticStream):
                     order_by_params["orderBy"] = cursor_field_snake_case
             merged_params = {**where_clause_params,**order_by_params}
             #merged_params['limit'] = self.limit
-            slices.append(merged_params)
+
+            if merged_params not in slices:
+                slices.append(merged_params)
 
             print(f'debugme: {slices}')
 
