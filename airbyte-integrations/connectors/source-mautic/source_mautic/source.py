@@ -216,14 +216,12 @@ class Contacts(IncrementalMauticStream):
                     order_by_params["orderBy"] = cursor_field_snake_case
             merged_params = {**where_clause_params,**order_by_params}
             #merged_params['limit'] = self.limit
-
+            slices.append(merged_params)
+            
             if merged_params not in slices:
-                slices.append(merged_params)
-
-        
-        print(f'debugme: {slices}')
-
-        yield from slices
+                yield merged_params
+            else:
+                yield {}
 
     def request_params(
         self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
