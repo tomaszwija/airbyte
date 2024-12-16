@@ -37,9 +37,8 @@ class IncrementalMauticStream(MauticStream):
     _state: MutableMapping[str, Any] = {}
     state_checkpoint_interval = None
 
-    def __init__(self, limit: str, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.limit = limit
 
     @property
     def state(self) -> Mapping[str, Any]:
@@ -123,6 +122,7 @@ class DoNotContactEvents(IncrementalMauticStream):
 
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         print(f"debugme: {response.request.path_url}")
+        print(f"debugme limit: {self.limit}")
         response_json = response.json()["events"]
         yield from response_json
 
