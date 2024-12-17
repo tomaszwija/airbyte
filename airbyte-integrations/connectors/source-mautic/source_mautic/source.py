@@ -177,6 +177,7 @@ class Contacts(IncrementalMauticStream):
         else:
             return None
 
+
     def stream_slices(self, cursor_field: List[str] = None, stream_state: Mapping[str, Any] = None, **kwargs) -> Iterable[Optional[Mapping[str, Any]]]:
 
         next_dateModified = self.start_date
@@ -221,18 +222,12 @@ class Contacts(IncrementalMauticStream):
                 if key == 'where[0][col]' and val == 'dateAdded':
                     order_by_params["orderBy"] = cursor_field_snake_case
             merged_params = {**where_clause_params,**order_by_params}
-            #merged_params['limit'] = self.limit
             slices.append(merged_params)
 
-        # for slice in slices:
-        #     if slice not in self.checkpointed_slices:
-        #         print(f"debugme: yielded slice: {slice}")
-        #         self.checkpointed_slices.append(slice)
-        #         yield slice
+  
 
         for slice in slices:
-            # print(f"debugme: yielded slice: {slice}")
-            # self.checkpointed_slices.append(slice)
+            self.start = 0 # reset pagination for each slice
             yield slice
                 
 
