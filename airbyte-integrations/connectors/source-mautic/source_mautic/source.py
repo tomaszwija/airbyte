@@ -232,7 +232,7 @@ class Contacts(IncrementalMauticStream):
 
         for slice in slices:
             # print(f"debugme: yielded slice: {slice}")
-            self.checkpointed_slices.append(slice)
+            # self.checkpointed_slices.append(slice)
             yield slice
                 
 
@@ -299,15 +299,22 @@ class Contacts(IncrementalMauticStream):
 
     def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
         for record in super().read_records(*args, **kwargs):
-            # print(f"debugme: state {self.state} / record {record.get(self.alt_cursor_field, '')} / startdate {self.start_date}")
             current_alt_cursor_value = self.state.get(self.alt_cursor_field, self.start_date) or self.start_date
             current_cursor_value = self.state.get(self.cursor_field, "") or self.start_date
+            
+            # Get record-specific values
             alt_cursor_value = record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field) or self.start_date
             cursor_value = record.get(self.cursor_field, "") or self.state.get(self.cursor_field) or self.start_date
-            updated_state = {
-                self.alt_cursor_field: max(alt_cursor_value, current_alt_cursor_value),
-                self.cursor_field: max(cursor_value, current_cursor_value)
-            }
+            
+            # Distinguish updates for the two slices
+            updated_state = self.state.copy()
+
+            if record.get(self.alt_cursor_field):  # Only update alt_cursor_field if it exists (Slice 1)
+                updated_state[self.alt_cursor_field] = max(alt_cursor_value, current_alt_cursor_value)
+            
+            if record.get(self.cursor_field) and not record.get(self.alt_cursor_field):  # Slice 2 logic
+                updated_state[self.cursor_field] = max(cursor_value, current_cursor_value)
+
             self.state = updated_state
             yield record
 
