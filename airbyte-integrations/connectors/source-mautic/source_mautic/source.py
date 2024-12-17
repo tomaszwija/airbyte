@@ -168,11 +168,11 @@ class Contacts(IncrementalMauticStream):
         response_data = response.json()
         self.total_records = int(response_data["total"])
 
-        print(f"debugme: Pagination current start: {self.start}")
+        # print(f"debugme: Pagination current start: {self.start}")
 
         if int(response_data["total"]) >= self.start:
             self.start+=self.limit
-            print(f"debugme: Pagination next start: {self.start}")
+            # print(f"debugme: Pagination next start: {self.start}")
             return {"start": self.start}
         else:
             return None
@@ -197,13 +197,13 @@ class Contacts(IncrementalMauticStream):
                 'where[0][val]': next_dateModified,
             },
             #new users
-            # {
-            #     'where[0][col]': 'dateAdded',
-            #     'where[0][expr]': 'gte',
-            #     'where[0][val]': next_dateAdded,
-            #     'where[1][col]': 'dateModified',
-            #     'where[1][expr]': 'isNull',
-            # }
+            {
+                'where[0][col]': 'dateAdded',
+                'where[0][expr]': 'gte',
+                'where[0][val]': next_dateAdded,
+                'where[1][col]': 'dateModified',
+                'where[1][expr]': 'isNull',
+            }
         ]
 
         for where_clause in where:
@@ -231,7 +231,7 @@ class Contacts(IncrementalMauticStream):
         #         yield slice
 
         for slice in slices:
-            print(f"debugme: yielded slice: {slice}")
+            # print(f"debugme: yielded slice: {slice}")
             self.checkpointed_slices.append(slice)
             yield slice
                 
@@ -250,7 +250,7 @@ class Contacts(IncrementalMauticStream):
 
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         url = response.request.path_url
-        print(f'debugme URL : {url}')
+        # print(f'debugme URL : {url}')
         response_json = response.json()
         
         if not "start" in url:
@@ -309,8 +309,6 @@ class Contacts(IncrementalMauticStream):
                 self.cursor_field: max(cursor_value, current_cursor_value)
             }
             self.state = updated_state
-            if self.state is None:
-                print('debugme WTF WTF')
             yield record
 
     
