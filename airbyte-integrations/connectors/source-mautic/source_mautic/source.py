@@ -302,8 +302,8 @@ class Contacts(IncrementalMauticStream):
             # print(f"debugme: state {self.state} / record {record.get(self.alt_cursor_field, '')} / startdate {self.start_date}")
             current_alt_cursor_value = self.state.get(self.alt_cursor_field, self.start_date) or self.start_date
             current_cursor_value = self.state.get(self.cursor_field, "") or self.start_date
-            alt_cursor_value = record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field)
-            cursor_value = record.get(self.cursor_field, "") or self.state.get(self.cursor_field)
+            alt_cursor_value = record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field) or self.start_date
+            cursor_value = record.get(self.cursor_field, "") or self.state.get(self.cursor_field) or self.start_date
             updated_state = {
                 self.alt_cursor_field: max(alt_cursor_value, current_alt_cursor_value),
                 self.cursor_field: max(cursor_value, current_cursor_value)
