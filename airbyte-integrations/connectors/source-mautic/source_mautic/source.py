@@ -293,25 +293,32 @@ class Contacts(IncrementalMauticStream):
 
 
     def read_records(self, *args, **kwargs) -> Iterable[Mapping[str, Any]]:
+        # Temporary state to accumulate per-slice state updates
+        slice_state = {self.cursor_field: self.state.get(self.cursor_field, self.start_date),
+                    self.alt_cursor_field: self.state.get(self.alt_cursor_field, self.start_date)}
+
         for record in super().read_records(*args, **kwargs):
-            current_alt_cursor_value = self.state.get(self.alt_cursor_field, self.start_date) or self.start_date
-            current_cursor_value = self.state.get(self.cursor_field, "") or self.start_date
+            current_alt_cursor_value = slice_state.get(self.alt_cursor_field, self.start_date) or self.start_date
+            current_cursor_value = slice_state.get(self.cursor_field, self.start_date) or self.start_date
             
-            # Get record-specific values
-            alt_cursor_value = record.get(self.alt_cursor_field, "") or self.state.get(self.alt_cursor_field) or self.start_date
-            cursor_value = record.get(self.cursor_field, "") or self.state.get(self.cursor_field) or self.start_date
+            # Extract values from record
+            alt_cursor_value = record.get(self.alt_cursor_field, "") or self.start_date
+            cursor_value = record.get(self.cursor_field, "") or self.start_date
             
-            # Distinguish updates for the two slices
-            updated_state = self.state.copy()
+            # Update slice state incrementally
+            if record.get(self.alt_cursor_field):  # Update dateModified
+                slice_state[self.alt_cursor_field] = max(alt_cursor_value, current_alt_cursor_value)
 
-            if record.get(self.alt_cursor_field):  # Only update alt_cursor_field if it exists (Slice 1)
-                updated_state[self.alt_cursor_field] = max(alt_cursor_value, current_alt_cursor_value)
-            
-            if record.get(self.cursor_field) and not record.get(self.alt_cursor_field):  # Slice 2 logic
-                updated_state[self.cursor_field] = max(cursor_value, current_cursor_value)
+            if record.get(self.cursor_field) and not record.get(self.alt_cursor_field):  # Update dateAdded
+                slice_state[self.cursor_field] = max(cursor_value, current_cursor_value)
 
-            self.state = updated_state
             yield record
+
+        # Merge slice state into the overall state at the end of the slice
+        self.state = {
+            self.alt_cursor_field: max(self.state.get(self.alt_cursor_field, self.start_date), slice_state[self.alt_cursor_field]),
+            self.cursor_field: max(self.state.get(self.cursor_field, self.start_date), slice_state[self.cursor_field])
+        }
 
     
 # Source
