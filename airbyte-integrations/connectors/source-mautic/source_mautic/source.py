@@ -269,6 +269,8 @@ class EmailEvents(IncrementalMauticStream):
 
         response_json = response.json()["events"]
 
+        print(f"debugme: {len(response_json)}")
+
         yield from response_json
 
     def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
