@@ -202,6 +202,85 @@ class DoNotContactEvents(IncrementalMauticStream):
         yield from response_json
 
 
+class EmailEvents(IncrementalMauticStream):
+
+    cursor_field = "timestamp"
+    primary_key = "eventId"
+    page = 0
+    include_events = 'email.read,email.sent,email.replied,email.failed'
+
+    def __init__(self,start_date="",url_base="",**kwargs):
+        super().__init__(**kwargs)
+        self.url_base = url_base
+        self.start_date = start_date
+        self.limit = 10000
+
+    def path(self, **kwargs) -> str:
+
+        return "contacts/activity"
+
+    def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
+        response_data = response.json()
+        self.total_records = int(response_data["total"])
+
+        if int(response_data["maxPages"]) > int(response_data["page"]):
+            self.page+=1
+            return {"page": self.page}
+        else:
+            return None
+
+    def request_params(
+        self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> MutableMapping[str, Any]:
+
+        params = super().request_params(stream_state,stream_slice,next_page_token)
+
+        if next_page_token:
+            params.update(next_page_token)
+
+        next_date = self.start_date
+        stream_state = stream_state or {}
+        if stream_state.get(self.cursor_field) is not None:
+            next_date = stream_state.get(self.cursor_field)
+
+        params["filters[dateFrom]"] = next_date
+        params["limit"] = self.limit
+        params["orderBy"] = self.cursor_field
+        params["orderByDir"] = "ASC"
+
+        # add events to include (take only email events)
+        i=0
+        for event in self.include_events.split(","):
+            params[f"filters[includeEvents][{i}]"] = event
+            i+=1
+
+        # first iteration add the page number (there's not default in the API)
+        if "page" not in params:
+            params["page"] = 0
+
+        return params
+
+    def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
+        """
+        :return an iterable containing each record in the response
+        """
+
+        print(response.request.path_url)
+
+        response_json = response.json()["events"]
+
+        yield from response_json
+
+    def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
+        """
+        Override to determine the latest state after reading the latest record. This typically compared the cursor_field from the latest record and
+        the current state and picks the 'most' recent cursor. This is how a stream's state is determined. Required for incremental.
+        """
+
+        updated_state = max(current_stream_state.get(self.cursor_field, ""), latest_record.get(self.cursor_field, ""))
+
+        return {self.cursor_field: updated_state}
+
 class Contacts(IncrementalMauticStream):
     _state: MutableMapping[str, Any] = {}
     cursor_field = "dateAdded"
@@ -422,6 +501,7 @@ class SourceMautic(AbstractSource):
         url_base = f'{config["host"].strip(" /")}/api'
        
         return [
+            EmailEvents(authenticator=auth,start_date=config['start_date'],url_base=url_base),
             DoNotContactEvents(authenticator=auth,start_date=config['start_date'],url_base=url_base),
             Contacts(authenticator=auth,start_date=config['start_date'],url_base=url_base),
         ]
