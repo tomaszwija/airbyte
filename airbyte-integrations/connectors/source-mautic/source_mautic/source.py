@@ -61,6 +61,84 @@ class IncrementalMauticStream(MauticStream):
             self.state = updated_state
             yield record
 
+class AuditLog(IncrementalMauticStream):
+
+    cursor_field = "date_added"
+    primary_key = "id"
+    start = 0
+
+    def __init__(self,start_date="",url_base="",**kwargs):
+        super().__init__(**kwargs)
+        self.url_base = url_base
+        self.start_date = start_date
+        self.limit = 100000
+
+    def path(self, **kwargs) -> str:
+
+        return "stats/audit_log"
+
+    def next_page_token(self, response: requests.Response) -> Optional[Mapping[str, Any]]:
+
+        response_data = response.json()
+        self.total_records = int(response_data["total"])
+
+        if int(response_data["total"]) >= self.start:
+            self.start+=self.limit
+            return {"start": self.start}
+        else:
+            return None
+
+    def request_params(
+        self, stream_state: Mapping[str, Any], stream_slice: Mapping[str, any] = None, next_page_token: Mapping[str, Any] = None
+    ) -> MutableMapping[str, Any]:
+
+        params = super().request_params(stream_state,stream_slice,next_page_token)
+
+        if next_page_token:
+            params.update(next_page_token)
+
+        next_date = self.start_date
+        stream_state = stream_state or {}
+        if stream_state.get(self.cursor_field) is not None:
+            next_date = stream_state.get(self.cursor_field)
+
+        params["where[0][val]"] = next_date
+        params["where[0][expr]"] = "gte"
+        params["where[0][col]"] = self.cursor_field
+        params["limit"] = self.limit
+        params["orderBy"] = self.cursor_field
+        params["orderByDir"] = "ASC"
+
+        return params
+
+    def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
+        """
+        :return an iterable containing each record in the response
+        """
+
+        print(response.request.path_url)
+        response_json = response.json()["stats"]
+        for row in response_json:
+            # convert the php object to a json
+            try:
+                details = phpserialize.loads(row['details'].encode(),decode_strings=True)
+                row['details_json'] = details
+            except ValueError as e:
+                row['details_json'] = 'value error'
+
+        yield from response_json
+
+    def get_updated_state(self, current_stream_state: MutableMapping[str, Any], latest_record: Mapping[str, Any]) -> Mapping[str, Any]:
+        """
+        Override to determine the latest state after reading the latest record. This typically compared the cursor_field from the latest record and
+        the current state and picks the 'most' recent cursor. This is how a stream's state is determined. Required for incremental.
+        """
+
+        updated_state = max(current_stream_state.get(self.cursor_field, ""), latest_record.get(self.cursor_field, ""))
+
+        return {self.cursor_field: updated_state}
+    
+    
 
 class DoNotContactEvents(IncrementalMauticStream):
     cursor_field = "timestamp"
@@ -245,7 +323,7 @@ class Contacts(IncrementalMauticStream):
 
     def parse_response(self, response: requests.Response, **kwargs) -> Iterable[Mapping]:
         url = response.request.path_url
-        # print(f'debugme URL : {url}')
+        print(f'debugme URL : {url}')
         response_json = response.json()
         
         if not "start" in url:
