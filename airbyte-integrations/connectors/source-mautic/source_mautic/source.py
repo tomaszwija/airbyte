@@ -265,7 +265,7 @@ class EmailEvents(IncrementalMauticStream):
         :return an iterable containing each record in the response
         """
 
-        print(response.request.path_url)
+        print(f"debugme: {response.request.path_url}")
 
         response_json = response.json()["events"]
 
